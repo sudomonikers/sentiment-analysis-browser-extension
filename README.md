@@ -1,0 +1,1 @@
+Loads gemma-3 into your browser to do offline, real time sentiment analysis of what is on your screen to detectelp you detect bias, Sentiment polarity (positive/negative)., subjectivity vs. objectivity, Tox classification and Named entity tone (e.g., strong emotions toward certain names).
