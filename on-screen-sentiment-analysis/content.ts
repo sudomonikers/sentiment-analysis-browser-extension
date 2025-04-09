@@ -5,6 +5,7 @@ import { Storage } from "@plasmohq/storage"
 const storage = new Storage()
 let timeoutId;
 
+//ONCE GEMMA 3 IS AVAILABLE, WE WILL NOT DO THIS, INSTEAD WE WILL TAKE A SCREENSHOT AND HAVE GEMMA3 USE THAT
 function extractMainContent(): string {
   try {
     const documentClone = document.cloneNode(true) as Document;
