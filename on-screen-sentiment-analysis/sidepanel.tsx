@@ -1,44 +1,36 @@
 import { useEffect, useState } from "react"
+
 import { Storage } from "@plasmohq/storage"
+
 import "./css.css"
-import type { MLCEngine } from "~node_modules/@mlc-ai/web-llm/lib";
+
+import { CreateMLCEngine } from "~node_modules/@mlc-ai/web-llm/lib"
 
 const storage = new Storage()
 
 function IndexSidePanel() {
-  const [result, setResult] = useState<any>([]);
-  const [modelLoadingProgress, setModelLoadingProgress] = useState<any>(null);
+  const [result, setResult] = useState<any>([])
+  const [modelLoadingProgress, setModelLoadingProgress] = useState<
+    string | null
+  >(null)
 
   useEffect(() => {
-    const initialize = async () => {
-      return new Promise((resolve, reject) => {
-        const tryGetEngine = async () => {
-          try {
-            const response = await chrome.runtime.sendMessage({ action: "getEngine" });
-            if (response.engine) {
-              console.log("Engine received in sidepanel");
-              resolve(response.engine);
-            } else {
-              console.error("Error getting engine:", response.error);
-              setTimeout(tryGetEngine, 1000);
-            }
-          } catch (error) {
-            console.error("Failed to send message:", error);
-            setTimeout(tryGetEngine, 1000);
-          }
-        };
-  
-        tryGetEngine();
-      });
-    }
+    const run = async () => {
+      const engine = await CreateMLCEngine(
+        "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
+        {
+          initProgressCallback: (p) =>
+            setModelLoadingProgress(`${p.progress}% - ${p.text}`)
+        }
+      )
 
-    initialize().then((llmInference: MLCEngine) => {
       storage.watch({
         PAGE_TEXT: async (pageText) => {
-          console.log(pageText);
           const messages = [
             { role: "system", content: "You are a helpful AI assistant." },
-            { role: "user", content: `
+            {
+              role: "user",
+              content: `
               Given the following webpage article, your task is to evaluate it for bias. 
               
               The article is as follows:
@@ -49,16 +41,17 @@ function IndexSidePanel() {
               --------------------
 
               Having read the article, respond back with whether or not it conatins any biases and an explanation of why they are biases.
-          ` },
+          `
+            }
           ];
-          const reply = await llmInference.chat.completions.create({//@ts-ignore
-            messages,
-          });
-          
+          //@ts-ignore
+          const reply = await engine.chat.completions.create({ messages })
           setResult(reply.choices[0].message)
         }
       })
-    })
+    }
+
+    run()
   }, [])
 
   return (
