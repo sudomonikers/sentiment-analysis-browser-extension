@@ -10,7 +10,9 @@
     "package": "plasmo package"
   },
   "dependencies": {
+    "@mlc-ai/web-llm": "^0.2.78",
     "@mozilla/readability": "^0.6.0",
+    "@plasmohq/messaging": "^0.7.1",
     "@plasmohq/storage": "^1.15.0",
     "plasmo": "0.90.3",
     "react": "18.2.0",

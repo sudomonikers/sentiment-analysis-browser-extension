@@ -1,8 +1,9 @@
+export {}
+
 import { Readability } from '@mozilla/readability'
 import { Storage } from "@plasmohq/storage"
 const storage = new Storage()
 
-export {}
 function extractMainContent(): string {
   const documentClone = document.cloneNode(true) as Document
   const article = new Readability(documentClone).parse()
